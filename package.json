@@ -1,11 +1,10 @@
 {
   "name": "curve2d",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An analytical 2D curve library.",
-  "main": "./build/index.js",
+  "main": "./index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./test/*.js",
-    "postinstall": "./node_modules/.bin/webpack"
+    "test": "./node_modules/.bin/mocha ./test/*.js"
   },
   "repository": {
     "type": "git",
@@ -34,7 +33,6 @@
     "eslint-plugin-standard": "^3.0.1",
     "mocha": "^3.1.2",
     "semistandard": "^9.1.0",
-    "snazzy": "^5.0.0",
-    "webpack": "^2.5.1"
+    "snazzy": "^5.0.0"
   }
 }
