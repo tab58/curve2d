@@ -1,0 +1,40 @@
+{
+  "name": "curve2d",
+  "version": "0.0.1",
+  "description": "An analytical 2D curve library.",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./test/*.js",
+    "postinstall": "./node_modules/.bin/webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tab58/curve2d.git"
+  },
+  "keywords": [
+    "curves",
+    "2d",
+    "geometry"
+  ],
+  "author": "Tim Bright",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tab58/curve2d/issues"
+  },
+  "homepage": "https://github.com/tab58/curve2d#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-semistandard": "^11.0.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "mocha": "^3.1.2",
+    "semistandard": "^9.1.0",
+    "snazzy": "^5.0.0",
+    "webpack": "^2.5.1"
+  }
+}
