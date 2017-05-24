@@ -47,6 +47,10 @@ const circle2DFunctions = {
   intersectWithInfiniteLine: function intersectWithInfiniteLine (infLine) {
     return infLine.intersectWithCircle(this);
   },
+  intersectWithEllipse: function intersectWithEllipse (ellipse) {
+    // TODO: there is probably a better/faster analytical method than just generalized conic intersection
+    return ellipse.intersectWithGeneralizedConic(this.asGeneralizedConic());
+  },
   intersectWithCircle: function intersectWithCircle (circle) {
     // method based on this link:
     // https://math.stackexchange.com/questions/213545/solving-trigonometric-equations-of-the-form-a-sin-x-b-cos-x-c

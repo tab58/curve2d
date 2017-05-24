@@ -70,6 +70,9 @@ const ellipse2dFunctions = {
     const thisAsConic = helpers.convertToGeneralizedConic.call(this);
     return thisAsConic.intersectWithInfiniteLine(line);
   },
+  intersectWithCircle: function intersectWithCircle (circle) {
+    return circle.intersectWithEllipse(this);
+  },
   intersectWithGeneralizedConic: function intersectWithGeneralizedConic (conic) {
     return helpers.intersectWithGeneralizedConic.call(this, conic);
   },

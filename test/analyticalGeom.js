@@ -250,6 +250,58 @@ describe('Analytical Operations', () => {
       const I3 = C0.intersectWithGeneralizedConic(C3asConic);
       assert(I3.length === 0, 'Circles should have no intersections.');
     });
+    it('#intersectWithEllipse()', () => {
+      const h = 0;
+      const k = 0;
+      const a = 3;
+      const b = 0.75;
+      const r = 1;
+
+      const center = new _Math.Vector2(h, k);
+      const C = Circle2D.createFromCenter(center, r);
+
+      // 4 intersections
+      const A1 = _Math.PI / 2;
+      const E1 = Ellipse2D.create(center, a, b, A1);
+      const I4 = C.intersectWithEllipse(E1);
+      assert(I4.length === 4, 'Ellipses should have 4 intersections.');
+      assert(I4.map(i => C.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on C.');
+      assert(I4.map(i => E1.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on E1.');
+
+      // 3 intersections
+      const q3 = 2;
+      const e5Center = new _Math.Vector2(h, k + q3);
+      const E5 = Ellipse2D.create(e5Center, a, b, A1);
+      const I3 = C.intersectWithEllipse(E5);
+      assert(I3.length === 3, 'Ellipses should have 3 intersections.');
+      assert(I3.map(i => C.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on C.');
+      assert(I3.map(i => E5.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on E5.');
+
+      // 2 intersections
+      const q2 = 3;
+      const e2Center = new _Math.Vector2(h, k + q2);
+      const E2 = Ellipse2D.create(e2Center, a, b, A1);
+      const I2 = C.intersectWithEllipse(E2);
+      assert(I2.length === 2, 'Ellipses should have 2 intersections.');
+      assert(I2.map(i => C.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on C.');
+      assert(I2.map(i => E2.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on E2.');
+
+      // 1 intersection
+      const q1 = 4;
+      const e3Center = new _Math.Vector2(h, k + q1);
+      const E3 = Ellipse2D.create(e3Center, a, b, A1);
+      const I1 = C.intersectWithEllipse(E3);
+      assert(I1.length === 1, 'Ellipses should have 1 intersection.');
+      assert(I1.map(i => C.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on C.');
+      assert(I1.map(i => E3.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on E3.');
+
+      // 0 intersections
+      const q0 = 4 + TestAsserts.TEST_EPSILON;
+      const e4Center = new _Math.Vector2(h, k + q0);
+      const E4 = Ellipse2D.create(e4Center, a, b, A1);
+      const I0 = C.intersectWithEllipse(E4);
+      assert(I0.length === 0, 'Ellipses should have 0 intersections.');
+    });
   });
   describe('Ellipse2D', () => {
     it('#asGeneralizedConic()', () => {
