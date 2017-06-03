@@ -345,6 +345,10 @@ Object.assign(Matrix3.prototype, {
     return this.getInverse(this);
   },
 
+  adjugate: function () {
+    return this.getAdjugate(this);
+  },
+
   getAdjugate: function (matrix) {
     const me = matrix.elements;
     const a11 = me[ 0 ];

@@ -22,11 +22,19 @@ const helpers = {
       // three roots, one with multiplicity 2 or 3
       if (Utils.isZero(b, TOLERANCE)) {
         // roots are all 0
-        return [-p / 3];
+        return [
+          -p / 3
+        ];
       } else if (b > 0) {
-        return [-2 * _Math.sqrt(-a / 3) - (p / 3), _Math.sqrt(-a / 3) - (p / 3)];
+        return [
+          -2 * _Math.sqrt(-a / 3) - (p / 3),
+          _Math.sqrt(-a / 3) - (p / 3)
+        ];
       } else { // b < 0
-        return [2 * _Math.sqrt(-a / 3) - (p / 3), -1 * _Math.sqrt(-a / 3) - (p / 3)];
+        return [
+          2 * _Math.sqrt(-a / 3) - (p / 3),
+          -1 * _Math.sqrt(-a / 3) - (p / 3)
+        ];
       }
     } else if (disc > 0) {
       if (PRINT_DEBUG) {
@@ -37,12 +45,18 @@ const helpers = {
       let innerB = -b / 2 - _Math.sqrt(disc);
       const A = (innerA < 0 ? -_Math.pow(-innerA, 1 / 3) : _Math.pow(innerA, 1 / 3));
       const B = (innerB < 0 ? -_Math.pow(-innerB, 1 / 3) : _Math.pow(innerB, 1 / 3));
-      return [(A + B) - (p / 3)];
+      return [
+        (A + B) - (p / 3)
+      ];
     } else { // disc < 0
       const J = ((b * b) / 4) / (-(a * a * a) / 27);
       const cosPhi = _Math.sqrt(J);
       const phi = -_Math.acos((b > 0 ? -cosPhi : cosPhi));
-      const angles = [phi, phi + 2 * _Math.PI, phi + 4 * _Math.PI];
+      const angles = [
+        phi,
+        phi + 2 * _Math.PI,
+        phi + 4 * _Math.PI
+      ];
 
       if (PRINT_DEBUG) {
         console.log('getRealCubicRoots: Discriminant is less than zero.');
@@ -64,7 +78,10 @@ const Polynomial = {
       return [];
     } else {
       const S = _Math.sqrt(disc);
-      return [ Q + (S / (2 * a)), Q - (S / (2 * a)) ];
+      return [
+        Q + (S / (2 * a)),
+        Q - (S / (2 * a))
+      ];
     }
   },
   // solves for roots of ax^2 + bx^2 + cx + d

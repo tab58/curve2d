@@ -9,7 +9,6 @@ const Geometry = require('../geometry/geometry.js');
 const InfiniteLine2D = Geometry.InfiniteLine2D;
 const Circle2D = Geometry.Circle2D;
 const Ellipse2D = Geometry.Ellipse2D;
-// const GeneralizedConic = Geometry.GeneralizedConic;
 
 describe('Analytical Operations', () => {
   describe('InfiniteLine2D', () => {
@@ -50,7 +49,7 @@ describe('Analytical Operations', () => {
 
       assert(L.isPointOnLine(new _Math.Vector2(halfSqrt2, halfSqrt2)), 'Point is not on line.');
     });
-    it('#getClosestPointTo()', () => {
+    it('#getClosestPointToPoint()', () => {
       const Q = new _Math.Vector2(1, 0);
       const P = new _Math.Vector2(0, 0);
       const halfSqrt2 = _Math.sqrt(2) / 2;
@@ -113,7 +112,7 @@ describe('Analytical Operations', () => {
     });
   });
   describe('Circle2D', () => {
-    it('#getClosestPointTo()', () => {
+    it('#getClosestPointToPoint()', () => {
       const P = new _Math.Vector2(0, 0);
       const r = 1;
       const C = Circle2D.createFromCenter(P, r);
@@ -403,11 +402,78 @@ describe('Analytical Operations', () => {
       assert(I1.map(i => L1.isPointOnLine(i)).reduce((acc, b) => b && acc, true), 'Intersections not on L1.');
 
       // 0 intersection case
-      const P0 = new _Math.Vector2(3 + TestAsserts.TEST_EPSILON, 0);
+      const P0 = new _Math.Vector2(3 + TestAsserts.TEST_EPSILON, 0);2
       const D0 = new _Math.Vector2(1, 0);
       const L0 = InfiniteLine2D.create(P0, D0);
       const I0 = E.intersectWithInfiniteLine(L0);
       assert(I0.length === 0, 'Circle should have 0 intersections.');
+    });
+    it('#getClosestPointToLine()', () => {
+      const h = 0;
+      const k = 0;
+      const a = 3;
+      const b = 1;
+      const A = _Math.PI / 4;
+      const center = new _Math.Vector2(h, k);
+      const E = Ellipse2D.create(center, a, b, A);
+
+      // line at x = 3
+      const P = new _Math.Vector2(3, 0);
+      const D = new _Math.Vector2(0, 1);
+      const L = InfiniteLine2D.create(P, D);
+
+      const Q = E.getClosestPointToLine(L);
+      const Q1 = new _Math.Vector2(2.23606797749979, 1.7888543819998315);
+      assert(E.isPointOnEllipse(Q), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(Q, Q1, 'Closest point is not correct.');
+    });
+    it('#getClosestPointToPoint()', () => {
+      const h = 0;
+      const k = 0;
+      const a = 3;
+      const b = 1.5;
+      const A = _Math.PI / 4;
+      const center = new _Math.Vector2(h, k);
+      const E1 = Ellipse2D.create(center, a, b, A);
+
+      // simple test in all quadrants
+      const p1x = 3;
+      const p1y = 4;
+      const P1 = new _Math.Vector2(p1x, p1y);
+      const Q1 = E1.getClosestPointToPoint(P1);
+      const qt1x = 1.9668151749244724;
+      const qt1y = 2.240394892602555;
+      const Qt1 = new _Math.Vector2(qt1x, qt1y);
+      assert(E1.isPointOnEllipse(Q1), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(Q1, Qt1, 'Closest point in 1st quadrant is not correct.');
+
+      const P2 = new _Math.Vector2(-p1x, -p1y);
+      const Q2 = E1.getClosestPointToPoint(P2);
+      const Qt2 = new _Math.Vector2(-qt1x, qt1y);
+      assert(E1.isPointOnEllipse(Q2), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(Q2, Qt2, 'Closest point in 3rd quadrant is not correct.');
+
+      const qt2x = -0.7332472847294296;
+      const qt2y = 1.364463718580848;
+      const P3 = new _Math.Vector2(-p1x, p1y);
+      const Q3 = E1.getClosestPointToPoint(P3);
+      const Qt3 = new _Math.Vector2(qt2x, qt2y);
+      assert(E1.isPointOnEllipse(Q3), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(Q3, Qt3, 'Closest point in 2nd quadrant is not correct.');
+
+      const P4 = new _Math.Vector2(p1x, -p1y);
+      const Q4 = E1.getClosestPointToPoint(P3);
+      const Qt4 = new _Math.Vector2(-qt2x, -qt2y);
+      assert(E1.isPointOnEllipse(Q4), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(Q4, Qt4, 'Closest point in 4th quadrant is not correct.');
+
+      // test where semimajor is less than semiminor
+      const E2 = Ellipse2D.create(center, b, a, A);
+      const QX = E2.getClosestPointToPoint(P1);
+      const QtX = new _Math.Vector2(-qt2x, qt2y);
+      assert(E2.isPointOnEllipse(QX), 'Point is not on ellipse.');
+      TestAsserts.vectorsAreEqualish(QX, QtX, 'Closest point is not correct.');
+      // console.log('Q2:', Q2);
     });
   });
 });

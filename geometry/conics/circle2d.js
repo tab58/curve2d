@@ -1,11 +1,11 @@
 'use strict';
 
-const _Math = require('../math/math.js');
+const _Math = require('../../math/math.js');
 const Vector2 = _Math.Vector2;
 const InfiniteLine2D = require('./infiniteLine2d.js');
 const GeneralizedConic = require('./generalizedConic.js');
 
-const GeomUtils = require('./analyticalUtils.js');
+const GeomUtils = require('../geomUtils.js');
 const EPSILON = GeomUtils.NumericalCompare.EPSILON;
 
 const circle2DFunctions = {

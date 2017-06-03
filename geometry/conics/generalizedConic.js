@@ -1,7 +1,7 @@
 'use strict';
 
-const GeomUtils = require('./analyticalUtils.js');
-const _Math = require('../math/math.js');
+const GeomUtils = require('../geomUtils.js');
+const _Math = require('../../math/math.js');
 const Vector2 = _Math.Vector2;
 // const Vector3 = _Math.Vector3;
 const Matrix3 = _Math.Matrix3;
@@ -25,6 +25,23 @@ const helpers = {
           B / 2, C, E / 2,
           D / 2, E / 2, F);
     return Q;
+  },
+  splitConicOf2DistinctLines: function (D) {
+    const adjD = D.clone().adjugate();
+    let i = 0;
+    let maxElem = 0;
+    for (i = 0; i < 3; ++i) {
+      maxElem = adjD.elements[i * 3 + i];
+      if (!GeomUtils.NumericalCompare.isZero(maxElem)) {
+        break;
+      }
+    }
+    const p = adjD.getColumn(i).multiplyScalar(1.0 / _Math.sqrt(_Math.abs(maxElem)));
+    const C = (new Matrix3()).setSkewSymmetric(p).add(D);
+    const Cij = C.findFirstNonvanishing();
+    const g = C.getRow(Cij.row);
+    const h = C.getColumn(Cij.column);
+    return [g, h];
   },
   intersectWithInfiniteLine: function (Q, l) {
     // form the degenerate conic
@@ -171,7 +188,8 @@ const GeneralizedConic = {
     };
     Object.assign(conic, publicAPI);
     return conic;
-  }
+  },
+  splitDegenerateConic: helpers.splitConicOf2DistinctLines
 };
 
 module.exports = GeneralizedConic;

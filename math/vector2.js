@@ -332,6 +332,16 @@ Object.assign(Vector2.prototype, {
     return array;
   },
 
+  rotate: function (angle) {
+    const c = _Math.cos(angle);
+    const s = _Math.sin(angle);
+    const x = this.x;
+    const y = this.y;
+    this.x = x * c - y * s;
+    this.y = x * s + y * c;
+    return this;
+  },
+
   fromBufferAttribute: function (attribute, index, offset) {
     if (offset !== undefined) {
       console.warn('THREE.Vector2: offset has been removed from .fromBufferAttribute().');
