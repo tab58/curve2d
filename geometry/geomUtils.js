@@ -5,7 +5,6 @@ const _Math = require('../math/math.js');
 const EPSILON = 1e-10;
 
 const GeomUtils = {
-  DEBUG: false,
   NumericalCompare: {
     EPSILON: EPSILON,
     isZero: function isZero (x) {

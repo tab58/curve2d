@@ -4,8 +4,6 @@ const _Math = require('./mathFunctions.js');
 const Utils = require('./mathUtils.js');
 const TOLERANCE = Utils.DEFAULT_TOLERANCE;
 
-const PRINT_DEBUG = false;
-
 const helpers = {
   // Based on method from http://web.cs.iastate.edu/~cs577/handouts/polyroots.pdf
   getRootsOfMonicCubic: function (p, q, r) {
@@ -16,9 +14,6 @@ const helpers = {
     // check discriminant
     const disc = (b * b) / 4 + (a * a * a) / 27;
     if (Utils.isZero(disc, TOLERANCE)) {
-      if (PRINT_DEBUG) {
-        console.log('getRealCubicRoots: Discriminant is zero.');
-      }
       // three roots, one with multiplicity 2 or 3
       if (Utils.isZero(b, TOLERANCE)) {
         // roots are all 0
@@ -37,9 +32,6 @@ const helpers = {
         ];
       }
     } else if (disc > 0) {
-      if (PRINT_DEBUG) {
-        console.log('getRealCubicRoots: Discriminant is greater than zero.');
-      }
       // one real root and a complex conjugate pair
       let innerA = -b / 2 + _Math.sqrt(disc);
       let innerB = -b / 2 - _Math.sqrt(disc);
@@ -57,12 +49,6 @@ const helpers = {
         phi + 2 * _Math.PI,
         phi + 4 * _Math.PI
       ];
-
-      if (PRINT_DEBUG) {
-        console.log('getRealCubicRoots: Discriminant is less than zero.');
-        console.log('phi:', phi);
-        console.log('angles:', angles);
-      }
       return angles.map(angle => 2 * _Math.sqrt(-a / 3) * _Math.cos(angle / 3) - (p / 3));
     }
   }

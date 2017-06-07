@@ -1,6 +1,6 @@
 {
   "name": "curve2d",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "An analytical 2D curve library.",
   "main": "./index.js",
   "scripts": {

@@ -27,7 +27,7 @@ const RootFinders = {
       }
     } while (!Utils.isZero(f(xr), es) && iter < imax);
     if (iter >= imax) {
-      console.warn('bisectionMethod(): Iteratiom max reached. Solution may not be accurate.');
+      console.warn('bisectionMethod(): Iteration max reached. Solution may not be accurate.');
     }
     return xr;
   }

@@ -2,6 +2,10 @@
 
 A 2D curve system that computes intersections.
 
+## Purpose
+
+A balance of speed, accuracy and completeness. There are a lot of algorithms that can compute the same answers, but some use numerical methods and heuristics to do it. The goal here is implement as many analytical methods as possible and only resort to numerical methods when no way is practical.
+
 NOTE: The API is still very much in flux.
 
 ## Supported Curves

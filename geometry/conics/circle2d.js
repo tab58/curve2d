@@ -38,7 +38,6 @@ const circle2DFunctions = {
     return GeneralizedConic.create(A, B, C, D, E, F);
   },
   isPointOnCircle: function isPointOnCircle (Q) {
-    // console.log('Dist:', Q.distanceTo(this.center) - this.radius);
     return GeomUtils.NumericalCompare.numbersAreEqual(Q.distanceTo(this.center), this.radius);
   },
   intersectWithGeneralizedConic: function intersectWithGeneralizedConic (conic) {
@@ -89,6 +88,9 @@ const circle2DFunctions = {
       }
     }
     return results;
+  },
+  clone: function clone() {
+    return Circle2D.create(this.center, this.radius);
   }
 };
 
@@ -122,7 +124,7 @@ const Circle2D = {
 
     const center = L1.intersectWithInfiniteLine(L2);
     if (center === undefined) {
-      console.warn('Circle points are collinear. Not creating circle.');
+      console.error('Circle points are collinear. Not creating circle.');
       return undefined;
     }
     const radius = center.distanceTo(p0);

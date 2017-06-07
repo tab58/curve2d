@@ -119,7 +119,7 @@ const helpers = {
         for (let j = i + 1; j < 3; ++j) {
           const scaleElem = me[(i * 3) + j];
           if (!Utils.isZero(scaleElem, EPSILON)) {
-            helpers.scaleAndAddRow(m, i, j, -1.0 / scaleElem);
+            helpers.scaleAndAddRow(m, i, j, -scaleElem);
           }
         }
       }
@@ -213,20 +213,6 @@ Object.assign(Matrix3.prototype, {
     te[ 6 ] = me[ 6 ]; te[ 7 ] = me[ 7 ]; te[ 8 ] = me[ 8 ];
     return this;
   },
-
-  applyToBufferAttribute: (function () {
-    const v1 = new Vector3();
-    return function applyToBufferAttribute (attribute) {
-      for (let i = 0, l = attribute.count; i < l; i++) {
-        v1.x = attribute.getX(i);
-        v1.y = attribute.getY(i);
-        v1.z = attribute.getZ(i);
-        v1.applyMatrix3(this);
-        attribute.setXYZ(i, v1.x, v1.y, v1.z);
-      }
-      return attribute;
-    };
-  }()),
 
   addMatrices: function (a, b, scalar) {
     const alpha = (scalar === undefined ? 1 : scalar);
@@ -370,18 +356,6 @@ Object.assign(Matrix3.prototype, {
     const t31 = +(a21 * a32 - a22 * a31);
     const t32 = -(a11 * a32 - a12 * a31);
     const t33 = +(a11 * a22 - a12 * a21);
-
-    // me[0] = +a22 * a33 - a23 * a32;
-    // me[3] = -a12 * a33 + a13 * a32;
-    // me[6] = +a12 * a23 - a13 * a22;
-    //
-    // me[1] = -a21 * a33 + a23 * a31;
-    // me[4] = +a11 * a33 - a13 * a31;
-    // me[7] = -a11 * a23 + a13 * a21;
-    //
-    // me[2] = +a21 * a32 - a22 * a31;
-    // me[5] = -a11 * a32 + a12 * a31;
-    // me[8] = +a11 * a22 - a12 * a21;
 
     const te = this.elements;
     te[0] = t11;

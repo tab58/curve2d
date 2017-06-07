@@ -9,7 +9,7 @@ const Matrix3 = _Math.Matrix3;
 const GeneralizedConic = require('./generalizedConic.js');
 
 const helpers = {
-  convertToGeneralizedConic: function () {
+  computeConicParameters: function computeConicParameters() {
     const h = this.center.x;
     const k = this.center.y;
     const a = this.semimajor;
@@ -32,6 +32,16 @@ const helpers = {
     const E = (a * a - b * b) * h * s2a - 2 * k * (aCos * aCos + bSin * bSin);
     const F = (a * a * h * h + b * b * k * k) * sa * sa + (a * a * k * k + b * b * h * h) * ca * ca +
       h * k * (b * b - a * a) * s2a - a * a * b * b;
+    return [A, B, C, D, E, F];
+  },
+  convertToGeneralizedConic: function () {
+    const paramArray = helpers.computeConicParameters.call(this);
+    const A = paramArray[0];
+    const B = paramArray[1];
+    const C = paramArray[2];
+    const D = paramArray[3];
+    const E = paramArray[4];
+    const F = paramArray[5];
     return GeneralizedConic.create(A, B, C, D, E, F);
   },
   intersectWithGeneralizedConic: function (conic) {
@@ -95,13 +105,12 @@ const ellipse2dFunctions = {
     }
     // move the point back into the right quadrant and move back to "original" position
     const X = new _Math.Vector2(x0 * signY0, x1 * signY1);
-    // console.log('X:', X);
     return X.rotate(beta).add(C);
   },
   getClosestPointToLine: function (line) {
     const conic = helpers.convertToGeneralizedConic.call(this);
     const Q = conic.asMatrix3();
-    const l = line.triple;
+    const l = line.getTriple();
 
     const adjQ = Q.clone().adjugate();
     // pInf is the point at which all lines parallel to `line` cross each other
@@ -140,18 +149,19 @@ const ellipse2dFunctions = {
   isPointOnEllipse: function isPointOnEllipse (Q) {
     const x = Q.x;
     const y = Q.y;
-    const h = this.center.x;
-    const k = this.center.y;
-    const a = this.semimajor;
-    const b = this.semiminor;
-    const A = this.rotation;
-    const cA = _Math.cos(A);
-    const sA = _Math.sin(A);
 
-    const numA = +(x - h) * cA + (y - k) * sA;
-    const numB = -(x - h) * sA + (y - k) * cA;
-
-    return GeomUtils.NumericalCompare.isZero((numA * numA) / (a * a) + (numB * numB) / (b * b) - 1);
+    // using conic parameters to eliminate catastrophic cancellation
+    const paramArray = helpers.computeConicParameters.call(this);
+    const A = paramArray[0];
+    const B = paramArray[1];
+    const C = paramArray[2];
+    const D = paramArray[3];
+    const E = paramArray[4];
+    const F = paramArray[5];
+    return GeomUtils.NumericalCompare.isZero(A * x * x + B * x * y + C * y * y + D * x + E * y + F);
+  },
+  clone: function clone() {
+    return Ellipse2D.create(this.center, this.semimajor, this.semiminor, this.rotation);
   }
 };
 

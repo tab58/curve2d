@@ -7,16 +7,16 @@ const Vector3 = _Math.Vector3;
 const GeomUtils = require('../geomUtils.js');
 
 const helperFunctions = {
-  calculateTriple: function calculateTriple () {
+  calculateTriple: function calculateTriple (vec3) {
+    const V = vec3 || new Vector3();
     const point = this.point;
     const d = this.direction;
     const u = d.x;
     const v = d.y;
     const x = point.x;
     const y = point.y;
-
-    this.triple.set(-v, u, v * x - u * y);
-    return this.triple;
+    V.set(-v, u, v * x - u * y);
+    return V;
   }
 };
 
@@ -27,18 +27,20 @@ const infiniteLine2DFunctions = {
   signedDistanceTo: function signedDistanceTo (Q) {
     const x = Q.x;
     const y = Q.y;
-    const a = this.triple.x;
-    const b = this.triple.y;
-    const c = this.triple.z;
+    const triple = helperFunctions.calculateTriple.call(this);
+    const a = triple.x;
+    const b = triple.y;
+    const c = triple.z;
 
     return ((a * x + b * y + c) / _Math.sqrt(a * a + b * b));
   },
   isPointOnLine: function isPointOnLine (Q) {
     const x = Q.x;
     const y = Q.y;
-    const a = this.triple.x;
-    const b = this.triple.y;
-    const c = this.triple.z;
+    const triple = helperFunctions.calculateTriple.call(this);
+    const a = triple.x;
+    const b = triple.y;
+    const c = triple.z;
     return GeomUtils.NumericalCompare.isZero(a * x + b * y + c);
   },
   getPointOnLine: function getPointOnLine () {
@@ -51,8 +53,8 @@ const infiniteLine2DFunctions = {
     const t = a.dot(QP);
     return a.clone().multiplyScalar(t).add(P);
   },
-  getTriple: function getTriple () {
-    return helperFunctions.calculateTriple.call(this);
+  getTriple: function getTriple (vec3) {
+    return helperFunctions.calculateTriple.call(this, vec3);
   },
   intersectWithInfiniteLine: function intersectWithInfiniteLine (infLine) {
     const L1 = helperFunctions.calculateTriple.call(this);
@@ -60,7 +62,6 @@ const infiniteLine2DFunctions = {
     const P = L1.clone().cross(L2);
     const z = P.z;
     if (GeomUtils.NumericalCompare.isZero(z)) {
-      if (GeomUtils.DEBUG) { console.warn('ImplicitLine: no intersection found.'); }
       return undefined;
     } else {
       return new Vector2(P.x / z, P.y / z);
@@ -81,11 +82,6 @@ const infiniteLine2DFunctions = {
     const B = 2 * (c * (x0 - a) + d * (y0 - b));
     const C = (x0 - a) * (x0 - a) + (y0 - b) * (y0 - b) - r * r;
     const disc = B * B - 4 * A * C;
-    if (GeomUtils.DEBUG) {
-      console.log('Discriminant:', disc);
-      console.log('IsZero:', GeomUtils.NumericalCompare.isZero(disc));
-      console.log('IsGTZero:', GeomUtils.NumericalCompare.isGTZero(disc));
-    }
     if (GeomUtils.NumericalCompare.isZero(disc)) {
       const t = -B / (2 * A);
       const x1 = x0 + c * t;
@@ -94,10 +90,6 @@ const infiniteLine2DFunctions = {
     } else if (GeomUtils.NumericalCompare.isGTZero(disc)) {
       const t1 = (-B + _Math.sqrt(disc)) / (2 * A);
       const t2 = (-B - _Math.sqrt(disc)) / (2 * A);
-      if (GeomUtils.DEBUG) {
-        console.log('t1:', t1);
-        console.log('t2:', t2);
-      }
       const x1 = x0 + c * t1;
       const y1 = y0 + d * t1;
       results.push(new Vector2(x1, y1));
@@ -109,6 +101,9 @@ const infiniteLine2DFunctions = {
   },
   intersectWithGeneralizedConic: function intersectWithGeneralizedConic (conic) {
     return conic.intersectWithInfiniteLine(this);
+  },
+  clone: function clone() {
+    return InfiniteLine2D.create(this.point, this.direction);
   }
 };
 
@@ -123,8 +118,7 @@ const InfiniteLine2D = {
     const line = {};
     Object.assign(line, {
       point: point.clone(),
-      direction: d,
-      triple: new Vector3(-v, u, v * x - u * y)
+      direction: d
     });
     Object.assign(line, infiniteLine2DFunctions);
     return line;
