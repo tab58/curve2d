@@ -81,22 +81,16 @@ const helpers = {
     }
 
     const maxP = P.findLargestAbsElement();
+    const TOL = GeomUtils.NumericalCompare.EPSILON;
     const pProj = P.getRow(maxP.row);
     const qProj = P.getColumn(maxP.column);
 
     // project the intersections back into 2D
-    const intxs = [];
-    if (pProj.z !== 0) {
-      const x = pProj.x / pProj.z;
-      const y = pProj.y / pProj.z;
-      intxs.push(new Vector2(x, y));
-    }
-    if (qProj.z !== 0) {
-      const x = qProj.x / qProj.z;
-      const y = qProj.y / qProj.z;
-      intxs.push(new Vector2(x, y));
-    }
-    return selectDistinctVector2(intxs);
+    const intxs = [pProj, qProj];
+    const filteredIntxs = intxs.filter(intx => GeomUtils.NumericalCompare.isZero(l.dot(intx)))
+      .filter(intx => intx.z !== 0)
+      .map(intx => new Vector2(intx.x / intx.z, intx.y / intx.z));
+    return selectDistinctVector2(filteredIntxs);
   }
 };
 
@@ -120,6 +114,7 @@ const publicAPI = {
     return helpers.intersectWithInfiniteLine(this.asMatrix3(), line.getTriple());
   },
   intersectWithGeneralizedConic: function intersectWithGeneralizedConic(conic) {
+    const TOL = GeomUtils.NumericalCompare.EPSILON;
     const Q1 = helpers.getMatrix3Representation.call(this);
     const Q2 = helpers.getMatrix3Representation.call(conic);
 
@@ -141,7 +136,7 @@ const publicAPI = {
       // Get the intersection point of the degenerate lines
       const G = (new Matrix3()).getAdjugate(Clambda);
       const maxG = G.findLargestAbsElement();
-      const p = G.getColumn(maxG.column).multiplyScalar(1.0 / _Math.sqrt(_Math.abs(maxG.value)));
+      const p = G.getColumn(maxG.column).multiplyScalar(1.0 / _Math.sqrt(_Math.abs(maxG.value))).clampToZero(TOL);
       const P = (new Matrix3()).setSkewSymmetric(p);
       Clambda.add(P, 1.0);
     }
@@ -150,14 +145,16 @@ const publicAPI = {
     const idxClambda = Clambda.findLargestAbsElement();
     const l = Clambda.getRow(idxClambda.row);
     const m = Clambda.getColumn(idxClambda.column);
+
     const lQ1 = helpers.intersectWithInfiniteLine(Q1, l);
-    const lQ2 = helpers.intersectWithInfiniteLine(Q2, l);
     const mQ1 = helpers.intersectWithInfiniteLine(Q1, m);
+    const lQ2 = helpers.intersectWithInfiniteLine(Q2, l);
     const mQ2 = helpers.intersectWithInfiniteLine(Q2, m);
 
-    const intxs = lQ1.concat(lQ2).concat(mQ1).concat(mQ2);
+    const intxs = lQ1.concat(mQ1).concat(lQ2).concat(mQ2);
     const that = this;
-    return selectDistinctVector2(intxs.filter(intx => that.isPointOnConic(intx) && conic.isPointOnConic(intx)));
+    const filteredIntxs = intxs.filter(intx => that.isPointOnConic(intx) && conic.isPointOnConic(intx));
+    return selectDistinctVector2(filteredIntxs);
   },
   clone: function clone() {
     const A = this.definition.A;

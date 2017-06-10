@@ -195,23 +195,6 @@ Object.assign(Vector3.prototype, {
     return this;
   },
 
-  // applyEuler: (function () {
-  //   const quaternion = new Quaternion();
-  //   return function applyEuler (euler) {
-  //     if ((euler && euler.isEuler) === false) {
-  //       console.error('THREE.Vector3: .applyEuler() now expects an Euler rotation rather than a Vector3 and order.');
-  //     }
-  //     return this.applyQuaternion(quaternion.setFromEuler(euler));
-  //   };
-  // }()),
-
-  // applyAxisAngle: (function () {
-  //   const quaternion = new Quaternion();
-  //   return function applyAxisAngle (axis, angle) {
-  //     return this.applyQuaternion(quaternion.setFromAxisAngle(axis, angle));
-  //   };
-  // }()),
-
   applyMatrix3: function (m) {
     const x = this.x;
     const y = this.y;
@@ -221,69 +204,6 @@ Object.assign(Vector3.prototype, {
     this.y = e[ 1 ] * x + e[ 4 ] * y + e[ 7 ] * z;
     this.z = e[ 2 ] * x + e[ 5 ] * y + e[ 8 ] * z;
     return this;
-  },
-
-  applyMatrix4: function (m) {
-    const x = this.x;
-    const y = this.y;
-    const z = this.z;
-    const e = m.elements;
-    this.x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z + e[ 12 ];
-    this.y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z + e[ 13 ];
-    this.z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z + e[ 14 ];
-    const w = e[ 3 ] * x + e[ 7 ] * y + e[ 11 ] * z + e[ 15 ];
-    return this.divideScalar(w);
-  },
-
-  applyQuaternion: function (q) {
-    const x = this.x;
-    const y = this.y;
-    const z = this.z;
-    const qx = q.x;
-    const qy = q.y;
-    const qz = q.z;
-    const qw = q.w;
-
-    // calculate quat * vector
-    const ix = qw * x + qy * z - qz * y;
-    const iy = qw * y + qz * x - qx * z;
-    const iz = qw * z + qx * y - qy * x;
-    const iw = -qx * x - qy * y - qz * z;
-
-    // calculate result * inverse quat
-    this.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
-    this.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
-    this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
-    return this;
-  },
-
-  // project: (function () {
-  //   const matrix = new Matrix4();
-  //   return function project (camera) {
-  //     matrix.multiplyMatrices(camera.projectionMatrix, matrix.getInverse(camera.matrixWorld));
-  //     return this.applyMatrix4(matrix);
-  //   };
-  // }()),
-
-  // unproject: (function () {
-  //   const matrix = new Matrix4();
-  //   return function unproject (camera) {
-  //     matrix.multiplyMatrices(camera.matrixWorld, matrix.getInverse(camera.projectionMatrix));
-  //     return this.applyMatrix4(matrix);
-  //   };
-  // }()),
-
-  transformDirection: function (m) {
-    // input: THREE.Matrix4 affine matrix
-    // vector interpreted as a direction
-    const x = this.x;
-    const y = this.y;
-    const z = this.z;
-    const e = m.elements;
-    this.x = e[ 0 ] * x + e[ 4 ] * y + e[ 8 ] * z;
-    this.y = e[ 1 ] * x + e[ 5 ] * y + e[ 9 ] * z;
-    this.z = e[ 2 ] * x + e[ 6 ] * y + e[ 10 ] * z;
-    return this.normalize();
   },
 
   divide: function (v) {
@@ -440,6 +360,13 @@ Object.assign(Vector3.prototype, {
     };
   }()),
 
+  clampToZero: function clampToZero(tol) {
+    this.x = (_Math.abs(this.x) < tol ? 0 : this.x);
+    this.y = (_Math.abs(this.y) < tol ? 0 : this.y);
+    this.z = (_Math.abs(this.z) < tol ? 0 : this.z);
+    return this;
+  },
+
   reflect: (function () {
     // reflect incident vector off plane orthogonal to normal
     // normal is assumed to have unit length
@@ -468,39 +395,6 @@ Object.assign(Vector3.prototype, {
 
   distanceToManhattan: function (v) {
     return _Math.abs(this.x - v.x) + _Math.abs(this.y - v.y) + _Math.abs(this.z - v.z);
-  },
-
-  setFromSpherical: function (s) {
-    const sinPhiRadius = _Math.sin(s.phi) * s.radius;
-    this.x = sinPhiRadius * _Math.sin(s.theta);
-    this.y = _Math.cos(s.phi) * s.radius;
-    this.z = sinPhiRadius * _Math.cos(s.theta);
-    return this;
-  },
-
-  setFromCylindrical: function (c) {
-    this.x = c.radius * _Math.sin(c.theta);
-    this.y = c.y;
-    this.z = c.radius * _Math.cos(c.theta);
-    return this;
-  },
-
-  setFromMatrixPosition: function (m) {
-    return this.setFromMatrixColumn(m, 3);
-  },
-
-  setFromMatrixScale: function (m) {
-    const sx = this.setFromMatrixColumn(m, 0).length();
-    const sy = this.setFromMatrixColumn(m, 1).length();
-    const sz = this.setFromMatrixColumn(m, 2).length();
-    this.x = sx;
-    this.y = sy;
-    this.z = sz;
-    return this;
-  },
-
-  setFromMatrixColumn: function (m, index) {
-    return this.fromArray(m.elements, index * 4);
   },
 
   equals: function (v) {

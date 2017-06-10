@@ -78,7 +78,7 @@ const ellipse2dFunctions = {
         // Use bisection method to get root
         const options = {
           maxIterations: 1074,
-          rootTolerance: 1e-14,
+          rootTolerance: 1e-15,
           lowerBound: -e1 * e1 + e1 * y1,
           upperBound: -e1 * e1 + _Math.sqrt(e0 * e0 * y0 * y0 + e1 * e1 * y1 * y1),
           initialValue: -e1 * e1 + e1 * y1
