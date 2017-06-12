@@ -78,12 +78,23 @@ describe('Parabola2D', () => {
   });
   it('#intersectWithCircle()', () => {
     const F = new _Math.Vector2(1, 1);
-    const D = InfiniteLine2D.create(new _Math.Vector2(0, 0), new _Math.Vector2(-1, 1));
+    const D = InfiniteLine2D.create(new _Math.Vector2(0.5, 0.5), new _Math.Vector2(-1, 1));
     const P = Parabola2D.create(F, D);
 
     // 4 intersections
-    // const C4 = Circle2D.createFromCenter(new _Math.Vector2(2.3, 2.3), 2);
-    // const I4 = P.intersectWithCircle(C4);
+    const C4 = Circle2D.createFromCenter(new _Math.Vector2(2.5, 2.5), 2);
+    const I4 = P.intersectWithCircle(C4);
+    assert(I4.length === 4, 'There should be 4 intersections.');
+    assert(I4.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
+    assert(I4.map(i => C4.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle.');
+
+    // 3 intersections
+    const l3 = (0.75 - _Math.sqrt(2) / 2) + _Math.sqrt(2);
+    const C3 = Circle2D.createFromCenter(new _Math.Vector2(l3, l3), 1);
+    const I3 = P.intersectWithCircle(C3);
+    assert(I3.length === 3, 'There should be 3 intersections.');
+    assert(I3.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
+    assert(I3.map(i => C3.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle.');
 
     // 2 intersections
     const C2 = Circle2D.createFromCenter(new _Math.Vector2(2, 2), 2);
@@ -93,20 +104,32 @@ describe('Parabola2D', () => {
     assert(I2.map(i => C2.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle.');
 
     // 1 intersection
-    const C1 = Circle2D.createFromCenter(new _Math.Vector2(2, -2), 2);
+    const l1 = 0.75 - _Math.sqrt(2) / 2;
+    const C1 = Circle2D.createFromCenter(new _Math.Vector2(l1, l1), 1);
     const I1 = P.intersectWithCircle(C1);
     assert(I1.length === 1, 'There should be 1 intersection.');
     assert(I1.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
     assert(I1.map(i => C1.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle.');
 
     // 0 intersections
-    const C0 = Circle2D.createFromCenter(new _Math.Vector2(2, -2 - Testing.TEST_EPSILON), 2);
+    const C0 = Circle2D.createFromCenter(new _Math.Vector2(2, -2), 2);
     const I0 = P.intersectWithCircle(C0);
     assert(I0.length === 0, 'There should be 0 intersections.');
   });
-  // it('#intersectWithEllipse()', () => {
-  //   const F = new _Math.Vector2(1, 1);
-  //   const D = InfiniteLine2D.create(new _Math.Vector2(0, 0), new _Math.Vector2(-1, 1));
-  //   const P = Parabola2D.create(F, D);
-  // });
+  it('#intersectWithEllipse()', () => {
+    const F = new _Math.Vector2(1, 1);
+    const D = InfiniteLine2D.create(new _Math.Vector2(0, 0), new _Math.Vector2(-1, 1));
+    const P = Parabola2D.create(F, D);
+
+    const h = 2;
+    const k = 2;
+    const a = 3;
+    const b = 1.5;
+    const alpha = _Math.PI / 4;
+    const eCenter = new _Math.Vector2(h, k);
+    const E4 = Ellipse2D.create(eCenter, a, b, alpha);
+
+    // 4 intersections
+
+  });
 });

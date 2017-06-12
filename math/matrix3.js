@@ -497,23 +497,22 @@ Object.assign(Matrix3.prototype, {
 
   getEigenvalues: function () {
     const je = this.elements;
-    const j11 = je[ 0 ];
-    const j21 = je[ 1 ];
-    const j31 = je[ 2 ];
+    const a = je[ 0 ];
+    const b = je[ 1 ];
+    const c = je[ 2 ];
+    const d = je[ 3 ];
+    const e = je[ 4 ];
+    const f = je[ 5 ];
+    const g = je[ 6 ];
+    const h = je[ 7 ];
+    const i = je[ 8 ];
 
-    const j12 = je[ 3 ];
-    const j22 = je[ 4 ];
-    const j32 = je[ 5 ];
+    const A = 1;
+    const B = -(a + e + i);
+    const C = a * e + a * i - d * b - g * c + e * i - h * f;
+    const D = -(a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g);
 
-    const j13 = je[ 6 ];
-    const j23 = je[ 7 ];
-    const j33 = je[ 8 ];
-
-    const a = 1;
-    const b = -(j11 + j22 + j33);
-    const c = j11 * j22 + j11 * j33 - j12 * j21 - j13 * j31 + j22 * j33 - j23 * j32;
-    const d = -j11 * j22 * j33 + j11 * j23 * j32 + j12 * j21 * j33 + j12 * j23 * j31 + j13 * j21 * j32 + j13 * j22 * j31;
-    return Polynomial.getRealCubicRoots(a, b, c, d);
+    return Polynomial.getRealCubicRoots(A, B, C, D);
   },
 
   findLargestAbsElement: function () {
@@ -527,10 +526,8 @@ Object.assign(Matrix3.prototype, {
     for (let i = 0; i < 3; ++i) {
       for (let j = 0; j < 3; ++j) {
         const val = te[i * 3 + j];
-        // console.log('val:', val);
         const ti = _Math.abs(val);
         if (ti > max) {
-          // console.log('Largest value:', ti);
           max = ti;
           rowCol.row = j;
           rowCol.column = i;
