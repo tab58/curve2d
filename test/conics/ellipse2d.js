@@ -119,7 +119,7 @@ describe('Ellipse2D', () => {
     assert(I1.map(i => L1.isPointOnLine(i)).reduce((acc, b) => b && acc, true), 'Intersections not on L1.');
 
     // 0 intersection case
-    const P0 = new _Math.Vector2(3 + Testing.TEST_EPSILON, 0);2
+    const P0 = new _Math.Vector2(3 + Testing.TEST_EPSILON, 0);
     const D0 = new _Math.Vector2(1, 0);
     const L0 = InfiniteLine2D.create(P0, D0);
     const I0 = E.intersectWithInfiniteLine(L0);

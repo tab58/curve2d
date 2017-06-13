@@ -122,11 +122,11 @@ describe('Circle2D', () => {
     const c0 = new _Math.Vector2(0, 0);
     const r0 = 1;
     const C0 = Circle2D.createFromCenter(c0, r0);
+
     const c1 = new _Math.Vector2(1, 0);
     const r1 = 1;
     const C1 = Circle2D.createFromCenter(c1, r1);
-    const C1asConic = C1.asGeneralizedConic();
-    const I2 = C0.intersectWithGeneralizedConic(C1asConic);
+    const I2 = C0.intersectWithGeneralizedConic(C1.asGeneralizedConic());
     assert(I2.length === 2, 'Circle should have 2 intersections.');
     assert(I2.map(i => C0.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle 0.');
     assert(I2.map(i => C1.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle 1.');
@@ -140,8 +140,8 @@ describe('Circle2D', () => {
     const c2 = new _Math.Vector2(2, 0);
     const r2 = 1;
     const C2 = Circle2D.createFromCenter(c2, r2);
-    const C2asConic = C2.asGeneralizedConic();
-    const I1 = C0.intersectWithGeneralizedConic(C2asConic);
+    debugger;
+    const I1 = C0.intersectWithGeneralizedConic(C2.asGeneralizedConic());
     assert(I1.length === 1, 'Circles should have 1 intersection.');
     assert(I1.map(i => C0.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle 0.');
     assert(I1.map(i => C2.isPointOnCircle(i)).reduce((acc, b) => b && acc, true), 'Intersections not on circle 2.');
@@ -155,8 +155,7 @@ describe('Circle2D', () => {
     const c3 = new _Math.Vector2(2 + Testing.TEST_EPSILON, 0);
     const r3 = 1;
     const C3 = Circle2D.createFromCenter(c3, r3);
-    const C3asConic = C3.asGeneralizedConic();
-    const I3 = C0.intersectWithGeneralizedConic(C3asConic);
+    const I3 = C0.intersectWithGeneralizedConic(C3.asGeneralizedConic());
     assert(I3.length === 0, 'Circles should have no intersections.');
   });
   it('#intersectWithEllipse()', () => {

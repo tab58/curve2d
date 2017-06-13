@@ -41,6 +41,9 @@ const publicFunctions = {
   },
   intersectWithCircle: function intersectWithCircle(circle) {
     return circle.intersectWithGeneralizedConic(this.asGeneralizedConic());
+  },
+  intersectWithEllipse: function intersectWithEllipse(ellipse) {
+    return ellipse.intersectWithGeneralizedConic(this.asGeneralizedConic());
   }
 };
 

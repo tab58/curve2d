@@ -69,7 +69,7 @@ describe('Parabola2D', () => {
     assert(I1.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
     assert(I1.map(i => L1.isPointOnLine(i)).reduce((acc, b) => b && acc, true), 'Intersections not on line.');
 
-    const P0 = new _Math.Vector2(2, -10 * Testing.TEST_EPSILON);
+    const P0 = new _Math.Vector2(2, -Testing.TEST_EPSILON);
     const D0 = new _Math.Vector2(1, 0);
     const L0 = InfiniteLine2D.create(P0, D0);
 
@@ -118,18 +118,35 @@ describe('Parabola2D', () => {
   });
   it('#intersectWithEllipse()', () => {
     const F = new _Math.Vector2(1, 1);
-    const D = InfiniteLine2D.create(new _Math.Vector2(0, 0), new _Math.Vector2(-1, 1));
+    const D = InfiniteLine2D.create(new _Math.Vector2(-1, -1), new _Math.Vector2(-1, 1));
     const P = Parabola2D.create(F, D);
 
-    const h = 2;
-    const k = 2;
     const a = 3;
     const b = 1.5;
     const alpha = _Math.PI / 4;
-    const eCenter = new _Math.Vector2(h, k);
-    const E4 = Ellipse2D.create(eCenter, a, b, alpha);
 
     // 4 intersections
+
+    // 3 intersections
+
+    // 2 intersections
+    const e2Center = new _Math.Vector2(2, 2);
+    const E2 = Ellipse2D.create(e2Center, a, b, alpha);
+    const I2 = P.intersectWithEllipse(E2);
+    assert(I2.length === 2, 'There should be 2 intersections.');
+    assert(I2.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
+    assert(I2.map(i => E2.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on ellipse.');
+
+    // 1 intersection
+    const l1 = 3 * _Math.sqrt(2) / 2;
+    const e1Center = new _Math.Vector2(l1, l1);
+    const E1 = Ellipse2D.create(e1Center, a, b, alpha);
+    const I1 = P.intersectWithEllipse(E1);
+    assert(I1.length === 1, 'There should be 1 intersection.');
+    assert(I1.map(i => P.isPointOnParabola(i)).reduce((acc, b) => b && acc, true), 'Intersections not on parabola.');
+    assert(I1.map(i => E1.isPointOnEllipse(i)).reduce((acc, b) => b && acc, true), 'Intersections not on ellipse.');
+
+    // 0 intersections
 
   });
 });

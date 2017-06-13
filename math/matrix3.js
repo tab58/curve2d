@@ -24,7 +24,9 @@ const helpers = {
   prettyPrint: function () {
     const formatNumber = function formatNumber (x) {
       const maxLen = 6;
-      let str = Utils.isZero(x, Utils.DEFAULT_TOLERANCE) ? '  0   ' : ('' + x).substring(0, maxLen);
+      let rawStr = '' + x;
+      let str = rawStr.substring(0, maxLen);
+      //let str = Utils.isZero(x, Utils.DEFAULT_TOLERANCE) ? '  0   ' : rawStr.substring(0, maxLen);
       let padding1 = '';
       let padding2 = '';
       const initStrLen = str.length;
@@ -33,6 +35,16 @@ const helpers = {
         padding2 += ' ';
       }
       const extra = ((maxLen > initStrLen) && ((maxLen - initStrLen) % 2 === 1) ? ' ' : '');
+      // format string with sci-notation
+      const eIdx = rawStr.indexOf('e');
+      if (eIdx > -1) {
+        const expStr = rawStr.substring(eIdx);
+        const expStrLen = expStr.length;
+
+        // if (str.trim() !== '0') {
+        str = str.substring(0, maxLen - expStrLen) + expStr;
+        // }
+      }
       const formatted = padding1 + str + padding2 + extra;
       return formatted;
     };
